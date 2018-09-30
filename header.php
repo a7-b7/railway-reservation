@@ -11,9 +11,27 @@
 </style>
 <script src="jquery.js"></script>
         <script>
+            function removeCookie(cookieName)
+            {
+                cookieValue = "";
+                cookieLifetime = -1;
+                var date = new Date();
+                date.setTime(date.getTime()+(cookieLifetime*24*60*60*1000));
+                var expires = "; expires="+date.toGMTString();
+                document.cookie = cookieName+"="+JSON.stringify(cookieValue)+expires+"; path=/";
+            }
+            function logout() {
+                removeCookie("PHPSESSID");
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                    document.location = 'login.php';
+                }
+                xhr.open('GET', 'login.php', true);
+                xhr.send();
+            }
             $(document).ready(function(){
               $("#Logout").hide();
-            };
+            });
             $(document).ready(function(){
                 $("#user").hover(function(){
                     $("#Logout").toggle("slow");
@@ -31,7 +49,7 @@
             <li><a href="booktkt.php">Book a ticket</a></li>
             <li><?php  
 				if(isset($_SESSION['user_info'])){
-					echo '<div id="dropdown">'.$_SESSION['user_info'].'<div id="Logout" style="display:none">Logout</div>';
+					echo '<div id="dropdown">'.$_SESSION['user_info'].'<div id="Logout" style="display:none">Logout</div>'.'<button id="LogoutButton" onClick="logout();">Logout</button>';
         }
 				else
 					echo '<A HREF="register.php">Login/Register</A>';
